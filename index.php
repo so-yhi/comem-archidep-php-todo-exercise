@@ -6,7 +6,7 @@
 // should be "/comem-archidep-php-todo-exercise/". If you are accessing the
 // application at "http://localhost:8888", then BASE_URL should be "/".
 define('BASE_URL', '/comem-archidep-php-todo-exercise');
-// AVEC TEST ICI POUR VOIR SI BIEN SYNCHRONISE
+// AVEC TEST ICI POUR VOIR SI BIEN SYNCHRONISE. Update, ça fonctionne.
 
 // Database connection parameters.
 define('DB_USER', 'todolist');
@@ -27,12 +27,12 @@ if (isset($_POST['action'])) {
     case 'new':
 
       $title = $_POST['title'];
-      if ($title && $title !== '') {
-        $insertQuery = 'INSERT INTO todo VALUES(NULL, \''.$title.'\', FALSE, CURRENT_TIMESTAMP)';
-        if (!$db->query($insertQuery)) {
-          die(print_r($db->errorInfo(), true));
-        }
+    if ($title && $title !== '') {
+      $insertQuery = 'INSERT INTO todo VALUES(NULL, \''.$title.'\', FALSE, CURRENT_TIMESTAMP)';
+      if (!$db->query($insertQuery)) {
+        die(print_r($db->errorInfo(), true));
       }
+    }
 
       header('Location: '.BASE_URL);
       die();
@@ -45,7 +45,9 @@ if (isset($_POST['action'])) {
 
       $id = $_POST['id'];
       if(is_numeric($id)) {
-        $updateQuery = ''; // IMPLEMENT ME
+        
+        // changement de la valeur booléenne vers son contraire
+        $updateQuery = 'UPDATE todo SET done = !done WHERE id=' . $id; // IMPLEMENTED
         if(!$db->query($updateQuery)) {
           die(print_r($db->errorInfo(), true));
         }
@@ -61,7 +63,7 @@ if (isset($_POST['action'])) {
 
       $id = $_POST['id'];
       if(is_numeric($id)) {
-        $deleteQuery = ''; // IMPLEMENT ME
+      $deleteQuery = 'DELETE FROM todo WHERE id='. $id; // IMPLEMENTED
         if(!$db->query($deleteQuery)) {
           die(print_r($db->errorInfo(), true));
         }
@@ -78,7 +80,7 @@ if (isset($_POST['action'])) {
 /**
  * Select all tasks from the database.
  */
-$selectQuery = 'SELECT * FROM todo';
+$selectQuery = 'SELECT * FROM todo ORDER BY `created_at` asc'; // correction travail collègue
 $items = $db->query($selectQuery);
 ?>
 
@@ -101,7 +103,7 @@ $items = $db->query($selectQuery);
   </head>
   <body>
 
-    <!-- Navbar -->
+        <!--Navbar-->
     <header>
       <div class="navbar navbar-dark bg-dark shadow-sm">
         <div class="container d-flex justify-content-between">
@@ -139,7 +141,7 @@ $items = $db->query($selectQuery);
             <form action='<?= BASE_URL ?>' method='post'>
               <input type='hidden' name='id' value='<?= $item['id'] ?>' />
 
-              <div class='btn-group btn-group-sm'</div>
+              <div class='btn-group btn-group-sm'></div>
 
                 <!-- Todo item toggle button -->
                 <button type='submit' name='action' value='toggle' class='btn btn-primary'>
